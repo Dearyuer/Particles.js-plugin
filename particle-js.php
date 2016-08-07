@@ -14,6 +14,7 @@ require_once(plugin_dir_path(__FILE__).'app/utl.php');
 add_action('wp_enqueue_scripts', function(){
 	$particle_enable_state = get_option("palette_particle_toggle");
 	if($particle_enable_state && is_home()){
+		wp_enqueue_script( 'particles_init',plugins_url('js/init.js', __FILE__), [], false, true);
 		wp_enqueue_script( 'particles',plugins_url('js/particles.min.js', __FILE__), [], false, true);
 		wp_enqueue_script( 'app',plugins_url('js/app.js', __FILE__), [], false, true);
 		require_once(plugin_dir_path(__FILE__).'app/appData.php');
@@ -21,6 +22,7 @@ add_action('wp_enqueue_scripts', function(){
 		wp_enqueue_style( 'particles_style',plugins_url('css/particle.css', __FILE__));
 	}
 });
+
 
 function particles_custom_scripts( $hook_suffix ){
 	wp_enqueue_style( 'admin_style', plugins_url("css/admin.css",__FILE__));
