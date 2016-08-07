@@ -9,29 +9,25 @@ Author URI: http://codrips.com
 License: GPLv2 or Later
 */ 
 
-require_once(plugin_dir_path(__FILE__).'/app/utl.php');
+require_once(plugin_dir_path(__FILE__).'app/utl.php');
 
 add_action('wp_enqueue_scripts', function(){
 	$particle_enable_state = get_option("palette_particle_toggle");
 	if($particle_enable_state && is_home()){
-		wp_enqueue_script( 'particles',get_template_directory_uri().'/js/particles.min.js', [], false, true);
-		wp_enqueue_script( 'app',get_template_directory_uri().'/js/app.js', [], false, true);
-		require_once(plugin_dir_path(__FILE__).'/app/appData.php');
-		require_once(plugin_dir_path(__FILE__).'/app/appL10n.php');
-		wp_enqueue_style( 'particles_style',get_template_directory_uri().'/css/particle.css');
+		wp_enqueue_script( 'particles',plugins_url('js/particles.min.js', __FILE__), [], false, true);
+		wp_enqueue_script( 'app',plugins_url('js/app.js', __FILE__), [], false, true);
+		require_once(plugin_dir_path(__FILE__).'app/appData.php');
+		require_once(plugin_dir_path(__FILE__).'app/appL10n.php');
+		wp_enqueue_style( 'particles_style',plugins_url('css/particle.css', __FILE__));
 	}
 });
 
-
 function particles_custom_scripts( $hook_suffix ){
-	wp_enqueue_style( 'admin_style', get_template_directory_uri().'/css/admin.css');
+	wp_enqueue_style( 'admin_style', plugins_url("css/admin.css",__FILE__));
 	wp_enqueue_style( 'wp-color-picker' );
-	wp_enqueue_script( 'my-script-handle', get_template_directory_uri(). '/js/color-picker.js', array( 'wp-color-picker' ), false, true );
+	wp_enqueue_script( 'my-script-handle', plugins_url('js/color-picker.js', __FILE__) , array( 'wp-color-picker' ), false, true );
 }
 add_action( 'admin_enqueue_scripts' , 'particles_custom_scripts');
-
-
-add_action( 'admin_menu', 'particles_js_add_menu_page' );
 
 function particles_js_add_menu_page() {
     add_menu_page(
@@ -45,6 +41,8 @@ function particles_js_add_menu_page() {
     );
 }
 
+add_action( 'admin_menu', 'particles_js_add_menu_page' );
+
 function particles_js_add_menu_page_fn(){
 	if (!current_user_can('manage_options')){
 	  wp_die( __('You do not have sufficient permissions to access this page.') );
@@ -54,26 +52,10 @@ function particles_js_add_menu_page_fn(){
 	$paletteOptionParticle = "palette_particle_toggle";
 	$particle_effect_state;
 
-
-	
-	require_once( plugin_dir_path(__FILE__)."/app/appData.php");
+	require_once( plugin_dir_path(__FILE__)."app/appData.php");
 	if( isset($_POST['particle_image_submit']) && check_admin_referer( "particle_image" , "particle_image_nonce") ) {
 
-		if( isset($_POST['particle_effect_checkbox']) && $_POST['particle_effect_checkbox']  == 'particle'){
-			$particle_effect_state = get_option($paletteOptionParticle);
-			if( empty($particle_effect_state) ) {
-				update_option( $paletteOptionParticle, 1 );
-				echo "<p>updated to true </p>";
-				$noChangesSaved++;
-			}
-		}else{
-			$particle_effect_state = get_option($paletteOptionParticle);
-			if( !empty($particle_effect_state) ){
-				update_option( $paletteOptionParticle, 0 );
-				echo "<p>updated to false</p>";
-				$noChangesSaved++;
-			}
-		}
+
 
 		if ( 
 			isset( $_POST['particle_image_nonce'], $_POST['post_id'] ) 
@@ -111,10 +93,25 @@ function particles_js_add_menu_page_fn(){
 	if( 
 	isset($_POST['palette_particle_effect_submit']) && check_admin_referer( 'palette_particle_effect_submit', 'palette_particle_effect_submit_nonce') 
 	){
+		if( isset($_POST['particle_effect_checkbox']) && $_POST['particle_effect_checkbox']  == 'particle'){
+			$particle_effect_state = get_option($paletteOptionParticle);
+			if( empty($particle_effect_state) ) {
+				update_option( $paletteOptionParticle, 1 );
+				echo "<p>updated to true </p>";
+				$noChangesSaved++;
+			}
+		}else{
+			$particle_effect_state = get_option($paletteOptionParticle);
+			if( !empty($particle_effect_state) ){
+				update_option( $paletteOptionParticle, 0 );
+				echo "<p>updated to false</p>";
+				$noChangesSaved++;
+			}
+		}
 
-		require_once(plugin_dir_path(__FILE__)."/app/appException.php");
+		require_once(plugin_dir_path(__FILE__)."app/appException.php");
 		
-		require_once(plugin_dir_path(__FILE__)."/app/appLoop.php");
+		require_once(plugin_dir_path(__FILE__)."app/appLoop.php");
 		
 		
 		if($noChangesSaved == 0){
@@ -126,7 +123,7 @@ function particles_js_add_menu_page_fn(){
 		}
 	}
 
-	require_once(plugin_dir_path(__FILE__)."/app/appWrapSideOne.php");
+	require_once(plugin_dir_path(__FILE__)."app/appWrapSideOne.php");
 }
 
 ?>
