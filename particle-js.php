@@ -129,6 +129,3 @@ function particles_js_add_menu_page_fn(){
 }
 
 ?>
-
-
-
